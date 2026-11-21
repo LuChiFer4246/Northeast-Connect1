@@ -213,7 +213,7 @@ async function startServer() {
       });
 
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Gemini triage timeout after 6s')), 6000)
+        setTimeout(() => reject(new Error('Gemini triage timeout after 6s')), 15000)
       );
 
       const response = await Promise.race([geminiPromise, timeoutPromise]);
