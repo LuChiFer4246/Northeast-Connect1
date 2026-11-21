@@ -124,7 +124,7 @@ export const SosTriageView: React.FC<SosTriageViewProps> = ({ isOnline }) => {
     }
 
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 9000);
+    const timeoutId = window.setTimeout(() => controller.abort(), 18000);
 
     try {
       const res = await fetch('/api/triage', {

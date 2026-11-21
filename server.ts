@@ -2,18 +2,19 @@ import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 import { GoogleGenAI, ThinkingLevel, Type } from '@google/genai';
-import { INITIAL_INCIDENTS, VERIFIED_HELPLINES } from './src/data/neData';
-import type { Incident, ReportCategory, SeverityLevel, TriageResponse } from './src/types';
+import { INITIAL_INCIDENTS, VERIFIED_HELPLINES } from './src/data/neData.ts';
+import type { Incident, ReportCategory, SeverityLevel, TriageResponse } from './src/types.ts';
 import {
   mapReportTypeToMapCategory,
   validateIncidentInput,
-} from './src/utils/incidentLogic';
+} from './src/utils/incidentLogic.ts';
 import {
   formatCoordinates,
   runOfflineTriage,
   validateTriageMessage,
-} from './src/utils/triageLogic';
+} from './src/utils/triageLogic.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,18 +26,23 @@ const isProduction = process.env.NODE_ENV === 'production';
 const incidentsStore: Incident[] = [...INITIAL_INCIDENTS];
 
 function getGeminiClient(): GoogleGenAI | null {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
     return null;
   }
-  return new GoogleGenAI({
-    apiKey,
-    httpOptions: {
-      headers: {
-        'User-Agent': 'aistudio-build',
+  try {
+    return new GoogleGenAI({
+      apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        },
       },
-    },
-  });
+    });
+  } catch (err) {
+    console.warn('[Gemini] Failed to initialize client, using offline fallback:', err);
+    return null;
+  }
 }
 
 function getHelplineLabel(number: string): string {
@@ -161,7 +167,7 @@ async function startServer() {
 
     try {
       const geminiPromise = ai.models.generateContent({
-        model: 'gemini-4-hydrogen',
+        model: 'gemini-3.5-flash-lite',
         contents: `Emergency report from North East India:\nMessage: "${message}"\nLocation: ${
           locationContext || 'Not provided'
         }`,
@@ -213,7 +219,7 @@ async function startServer() {
       });
 
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Gemini triage timeout after 6s')), 15000)
+        setTimeout(() => reject(new Error('Gemini triage timeout after 15s')), 15000)
       );
 
       const response = await Promise.race([geminiPromise, timeoutPromise]);
@@ -277,14 +283,23 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.resolve(__dirname, 'dist');
+    const indexHtmlPath = path.join(distPath, 'index.html');
     app.use(express.static(distPath));
     app.get('*', (_req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+      if (fs.existsSync(indexHtmlPath)) {
+        res.sendFile(indexHtmlPath);
+      } else {
+        res.status(503).send('Frontend build not found. Run npm run build before starting in production.');
+      }
     });
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Northeast Connect server listening on http://0.0.0.0:${PORT}`);
+    console.log(
+      `Northeast Connect server listening on http://0.0.0.0:${PORT} (mode=${
+        isProduction ? 'production' : 'development'
+      }, gemini=${Boolean(getGeminiClient()) ? 'enabled' : 'offline-fallback'})`
+    );
   });
 }
 
