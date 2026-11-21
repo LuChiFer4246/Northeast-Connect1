@@ -1,3 +1,5 @@
+https://ne-emergency-assistant.ai.studio/
+
 # Northeast Connect — Disaster Management & Community Emergency Assistant
 
 An open-source, offline-first disaster response and emergency coordination web application built specifically for **North East India** (Assam, Meghalaya, Arunachal Pradesh, Manipur, Mizoram, Nagaland, Tripura, and Sikkim).
