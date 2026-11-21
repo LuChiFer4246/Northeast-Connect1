@@ -249,7 +249,7 @@ export function runOfflineTriage(req: TriageRequest): TriageResponse {
     `SOS [${urgency.toUpperCase()} - ${category}]`,
     `Need: ${summarySnippet}`,
     locationPart ? `Location: ${locationPart}` : 'Location: North East India (share landmark)',
-    `Helpline: ${recommendedHelpline} | Sent via Northeast Connect`,
+    `Helpline: ${recommendedHelpline} | Sent via Northeast Emergency Assistant`,
   ].join('\n');
 
   return {

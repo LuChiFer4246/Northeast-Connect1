@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "Northeast Connect",
-  "short_name": "NE Connect",
+  "name": "Northeast Emergency Assistant",
+  "short_name": "NE Assistant",
   "description": "Offline-first disaster management, verified emergency helplines, relief map, and AI SOS triage for North East India.",
   "start_url": "/",
   "scope": "/",

@@ -48,7 +48,7 @@ export const PWAInstallButton: React.FC = () => {
                   id="ios-install-title"
                   className="font-display text-lg font-bold text-slate-900 dark:text-white"
                 >
-                  Install Northeast Connect on iOS
+                  Install Northeast Emergency Assistant on iOS
                 </h2>
                 <button
                   type="button"
@@ -62,7 +62,7 @@ export const PWAInstallButton: React.FC = () => {
               <ol className="mt-4 list-decimal space-y-2 pl-5 text-base text-slate-700 dark:text-neutral-200">
                 <li>Tap the <strong>Share</strong> icon in your Safari toolbar.</li>
                 <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
-                <li>Open Northeast Connect offline anytime during emergencies.</li>
+                <li>Open Northeast Emergency Assistant offline anytime during emergencies.</li>
               </ol>
             </div>
           </div>

@@ -157,7 +157,7 @@ export default function App() {
       <footer className="border-t border-slate-200 bg-white py-6 pb-24 text-sm text-slate-600 md:pb-6 dark:border-neutral-800 dark:bg-black dark:text-neutral-300">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-2 px-4 sm:flex-row sm:items-center sm:px-6">
           <p className="font-semibold text-slate-800 dark:text-white">
-            Northeast Connect · Assam, Meghalaya, Arunachal Pradesh, Manipur, Mizoram, Nagaland, Tripura &amp; Sikkim
+            Northeast Emergency Assistant · Assam, Meghalaya, Arunachal Pradesh, Manipur, Mizoram, Nagaland, Tripura &amp; Sikkim
           </p>
           <p>
             Offline cache active · In life-threatening emergencies always dial{' '}

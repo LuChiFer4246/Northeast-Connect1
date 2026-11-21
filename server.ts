@@ -176,7 +176,7 @@ async function startServer() {
             thinkingLevel: ThinkingLevel.LOW,
           },
           systemInstruction:
-            'You are Northeast Connect Emergency SOS Triage Assistant for North East India (Assam, Meghalaya, Arunachal Pradesh, Manipur, Mizoram, Nagaland, Tripura, Sikkim). ' +
+            'You are Northeast Emergency Assistant SOS Triage for North East India (Assam, Meghalaya, Arunachal Pradesh, Manipur, Mizoram, Nagaland, Tripura, Sikkim). ' +
             'Analyze the stressed user message calmly and return valid JSON only. ' +
             'Choose urgency from "Critical", "High", "Moderate". ' +
             'Choose category from "Flood", "Landslide", "Medical", "Fire/Rescue". ' +
@@ -296,7 +296,7 @@ async function startServer() {
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(
-      `Northeast Connect server listening on http://0.0.0.0:${PORT} (mode=${
+      `Northeast Emergency Assistant server listening on http://0.0.0.0:${PORT} (mode=${
         isProduction ? 'production' : 'development'
       }, gemini=${Boolean(getGeminiClient()) ? 'enabled' : 'offline-fallback'})`
     );
@@ -304,6 +304,6 @@ async function startServer() {
 }
 
 startServer().catch((err) => {
-  console.error('Failed to start Northeast Connect server:', err);
+  console.error('Failed to start Northeast Emergency Assistant server:', err);
   process.exit(1);
 });

@@ -41,25 +41,25 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header className="z-30 border-b border-slate-200 bg-white md:sticky md:top-0 dark:border-white dark:bg-black">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2.5 sm:px-6">
         {/* Brand Zone */}
         <button
           type="button"
           onClick={() => onSelectTab('map')}
-          className="inline-flex min-h-[48px] items-center gap-2.5 whitespace-nowrap shrink-0 text-left text-slate-900 dark:text-white"
+          className="inline-flex min-h-[48px] items-center gap-2 whitespace-nowrap shrink-0 text-left text-slate-900 dark:text-white"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-600 text-white dark:bg-yellow-300 dark:text-black">
-            <ShieldCheck className="h-6 w-6" aria-hidden="true" />
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white dark:bg-yellow-300 dark:text-black">
+            <ShieldCheck className="h-5 w-5" aria-hidden="true" />
           </span>
-          <span className="font-display text-lg font-extrabold tracking-tight sm:text-xl">
-            Northeast Connect
+          <span className="font-display text-base font-extrabold tracking-tight sm:text-lg">
+            Northeast Emergency Assistant
           </span>
         </button>
 
         {/* Primary Desktop Navigation */}
         <nav
           aria-label="Primary sections"
-          className="hidden items-center gap-1 lg:flex"
+          className="hidden items-center gap-1 xl:flex"
         >
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
@@ -70,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 aria-current={isActive ? 'page' : undefined}
                 onClick={() => onSelectTab(item.id)}
-                className={`inline-flex min-h-[48px] items-center gap-2 whitespace-nowrap shrink-0 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+                className={`inline-flex min-h-[48px] items-center gap-1.5 whitespace-nowrap shrink-0 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
                   isActive
                     ? 'bg-slate-900 text-white dark:bg-yellow-300 dark:text-black'
                     : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950 dark:text-white dark:hover:bg-neutral-900'
@@ -90,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
             role="status"
             aria-live="polite"
             data-testid="connectivity-status"
-            className={`inline-flex min-h-[48px] items-center gap-2 whitespace-nowrap shrink-0 rounded-lg border px-3 py-2 text-sm font-semibold ${
+            className={`inline-flex min-h-[48px] items-center gap-1.5 whitespace-nowrap shrink-0 rounded-lg border px-2.5 py-2 text-sm font-semibold ${
               isOnline
                 ? 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-400 dark:bg-black dark:text-emerald-300'
                 : 'border-amber-300 bg-amber-50 text-amber-950 dark:border-yellow-300 dark:bg-black dark:text-yellow-300'
@@ -109,7 +109,7 @@ export const Header: React.FC<HeaderProps> = ({
             type="button"
             aria-pressed={elderlyMode}
             onClick={onToggleElderlyMode}
-            className={`inline-flex min-h-[48px] items-center gap-2 whitespace-nowrap shrink-0 rounded-lg border px-3.5 py-2 text-sm font-bold transition-colors ${
+            className={`inline-flex min-h-[48px] items-center gap-1.5 whitespace-nowrap shrink-0 rounded-lg border px-3 py-2 text-sm font-bold transition-colors ${
               elderlyMode
                 ? 'border-yellow-300 bg-yellow-300 text-black hover:bg-yellow-200'
                 : 'border-slate-300 bg-slate-900 text-white hover:bg-slate-800'
@@ -126,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Tablet / Mobile Section Navigation Bar (non-sticky inside flow on small screens via scrollable row) */}
       <nav
         aria-label="Mobile sections"
-        className="flex items-center gap-1.5 overflow-x-auto border-t border-slate-200 px-3 py-2 lg:hidden dark:border-neutral-800"
+        className="flex items-center gap-1.5 overflow-x-auto border-t border-slate-200 px-3 py-2 xl:hidden dark:border-neutral-800"
       >
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
