@@ -36,6 +36,10 @@ const GUIDE_ICONS: Record<'flood' | 'landslide' | 'earthquake', React.ComponentT
   earthquake: Activity,
 };
 
+/**
+ * Offline-ready multilingual survival guide (Floods, Landslides, Earthquakes)
+ * paired with a persistent Emergency Go-Bag packing checklist.
+ */
 export const SurvivalGuideView: React.FC<SurvivalGuideViewProps> = ({
   language,
   onChangeLanguage,

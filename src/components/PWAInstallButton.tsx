@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Download, X } from 'lucide-react';
 import { usePWAInstall } from '../hooks/usePWAInstall';
 
+/**
+ * Renders a native PWA install trigger when supported or an iOS Safari
+ * Add-to-Home-Screen instruction modal on iOS browsers.
+ */
 export const PWAInstallButton: React.FC = () => {
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
   const [showIOSGuide, setShowIOSGuide] = useState(false);

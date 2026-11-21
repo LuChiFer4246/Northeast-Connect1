@@ -10,6 +10,10 @@ interface HelplineBarProps {
 
 const LANGUAGES: Language[] = ['en', 'as', 'hi'];
 
+/**
+ * Always-accessible verified North East India emergency call bar with 1-tap `tel:` links,
+ * English/Assamese/Hindi toggle, and full offline helpline directory modal.
+ */
 export const HelplineBar: React.FC<HelplineBarProps> = ({
   language,
   onChangeLanguage,

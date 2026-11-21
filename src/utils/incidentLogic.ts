@@ -1,7 +1,9 @@
 import type { Incident, IncidentCategory, ReportCategory, SeverityLevel } from '../types';
 
+/** Filter categories supported by the map and offline incident list. */
 export type MapFilterCategory = 'all' | IncidentCategory;
 
+/** Input payload for validating and submitting a community incident report. */
 export interface IncidentFormInput {
   title: string;
   reportType: ReportCategory;
@@ -13,12 +15,16 @@ export interface IncidentFormInput {
   description: string;
 }
 
+/** Field-level validation errors returned by {@link validateIncidentInput}. */
 export interface ValidationErrors {
   title?: string;
   locationName?: string;
   description?: string;
 }
 
+/**
+ * Maps a community report category to its corresponding map pin category.
+ */
 export function mapReportTypeToMapCategory(reportType: ReportCategory): IncidentCategory {
   switch (reportType) {
     case 'flood':
@@ -31,6 +37,24 @@ export function mapReportTypeToMapCategory(reportType: ReportCategory): Incident
   }
 }
 
+/**
+ * Verifies that latitude and longitude are finite numbers within the
+ * North East India geographic bounding box (`lat: 20..30`, `lng: 87..98`).
+ */
+export function isValidNorthEastCoordinates(lat: number, lng: number): boolean {
+  return (
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    lat >= 20 &&
+    lat <= 30 &&
+    lng >= 87 &&
+    lng <= 98
+  );
+}
+
+/**
+ * Validates required title, location, and description fields for a community incident report.
+ */
 export function validateIncidentInput(input: IncidentFormInput): {
   valid: boolean;
   errors: ValidationErrors;
@@ -55,6 +79,10 @@ export function validateIncidentInput(input: IncidentFormInput): {
   };
 }
 
+/**
+ * Filters incidents by map category and free-text query across title, location,
+ * state, and description, returning results sorted newest first.
+ */
 export function filterIncidents(
   incidents: Incident[],
   category: MapFilterCategory,
@@ -78,6 +106,9 @@ export function filterIncidents(
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 }
 
+/**
+ * Tallies total and per-category incident counts for the map filter bar.
+ */
 export function countIncidentsByCategory(
   incidents: Incident[]
 ): Record<MapFilterCategory, number> {
@@ -96,6 +127,9 @@ export function countIncidentsByCategory(
   return counts;
 }
 
+/**
+ * Calculates deduplicated, clamped Emergency Go-Bag checklist completion metrics.
+ */
 export function calculateGoBagProgress(
   checkedIds: string[],
   totalItems: number
@@ -107,6 +141,10 @@ export function calculateGoBagProgress(
   return { checkedCount: clamped, totalCount: safeTotal, percent };
 }
 
+/**
+ * Formats an ISO timestamp into a compact `en-IN` display string,
+ * falling back to `'Just now'` if the timestamp cannot be parsed.
+ */
 export function formatRelativeTimestamp(isoString: string): string {
   const date = new Date(isoString);
   if (Number.isNaN(date.getTime())) return 'Just now';

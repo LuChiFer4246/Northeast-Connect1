@@ -19,6 +19,10 @@ import {
   saveLanguage,
 } from './utils/storage';
 
+/**
+ * Root application shell managing offline cache hydration, language/accessibility modes,
+ * live incident state, and top-level emergency navigation views.
+ */
 export default function App() {
   const isOnline = useOnlineStatus();
   const [activeTab, setActiveTab] = useState<ActiveTab>('map');

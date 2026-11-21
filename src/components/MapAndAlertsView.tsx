@@ -60,6 +60,10 @@ const CATEGORY_TEXT: Record<IncidentCategory, { label: string; textClass: string
   },
 };
 
+/**
+ * Main disaster overview combining category filters, search, Map/List toggle,
+ * interactive Leaflet map, and offline-friendly Live Alerts & Shelters feed.
+ */
 export const MapAndAlertsView: React.FC<MapAndAlertsViewProps> = ({
   incidents,
   isLoading,

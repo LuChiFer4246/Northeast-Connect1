@@ -33,6 +33,10 @@ const SEVERITIES: Array<{ id: SeverityLevel; label: string }> = [
   { id: 'Moderate', label: 'Moderate' },
 ];
 
+/**
+ * Accessible form enabling residents to report floods, landslides, blocked roads,
+ * or relief needs with city presets, live GPS capture, and offline cache fallback.
+ */
 export const IncidentReportView: React.FC<IncidentReportViewProps> = ({
   isOnline,
   onIncidentCreated,
@@ -161,15 +165,19 @@ export const IncidentReportView: React.FC<IncidentReportViewProps> = ({
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
+      const data = (await res.json()) as {
+        incident?: Incident;
+        error?: string;
+        errors?: ValidationErrors;
+      };
+      if (!res.ok || !data.incident) {
         if (data.errors) setErrors(data.errors);
         setSubmitError(data.error || 'Could not submit report. Please review the form.');
         setIsSubmitting(false);
         return;
       }
 
-      const created = data.incident as Incident;
+      const created = data.incident;
       onIncidentCreated(created);
       setSubmittedIncident(created);
       setTitle('');

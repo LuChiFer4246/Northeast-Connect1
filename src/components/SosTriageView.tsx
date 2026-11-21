@@ -41,6 +41,10 @@ const QUICK_SCENARIOS = [
   },
 ];
 
+/**
+ * AI SOS Triage and emergency message generator supporting GPS attachment,
+ * server-side Gemini triage, instant offline fallback, clipboard copy, and WhatsApp share.
+ */
 export const SosTriageView: React.FC<SosTriageViewProps> = ({ isOnline }) => {
   const [message, setMessage] = useState('');
   const [lat, setLat] = useState<number | null>(null);
@@ -134,7 +138,7 @@ export const SosTriageView: React.FC<SosTriageViewProps> = ({ isOnline }) => {
         signal: controller.signal,
       });
 
-      const data = await res.json();
+      const data = (await res.json()) as Partial<TriageResponse> & { error?: string };
       if (!res.ok) {
         setFormError(data.error || 'Could not process triage request. Please check your message.');
         setIsSubmitting(false);

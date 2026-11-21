@@ -5,15 +5,18 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
 }
 
+/**
+ * Manages PWA installation prompt state, standalone detection, and iOS install guidance flags.
+ */
 export function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
+    const nav = window.navigator as Navigator & { standalone?: boolean };
     const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as unknown as { standalone?: boolean }).standalone === true;
+      window.matchMedia('(display-mode: standalone)').matches || nav.standalone === true;
     setIsInstalled(isStandalone);
 
     const ua = window.navigator.userAgent.toLowerCase();

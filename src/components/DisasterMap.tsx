@@ -111,6 +111,10 @@ function buildPopupHtml(inc: Incident): string {
   `;
 }
 
+/**
+ * Interactive Leaflet map centered on North East India rendering categorized pins,
+ * popups, selection fly-to behavior, and an offline tile fallback prompt.
+ */
 export const DisasterMap: React.FC<DisasterMapProps> = ({
   incidents,
   selectedIncidentId,

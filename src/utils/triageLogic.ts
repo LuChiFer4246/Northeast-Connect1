@@ -1,10 +1,23 @@
 import type { TriageRequest, TriageResponse } from '../types';
 
+/** Verified North East India emergency helpline numbers accepted by SOS triage. */
+export const VERIFIED_HELPLINE_NUMBERS = ['1070', '1079', '1077', '108', '112'] as const;
+
+/** Union of verified emergency helpline numbers. */
+export type VerifiedHelplineNumber = (typeof VERIFIED_HELPLINE_NUMBERS)[number];
+
+const VERIFIED_HELPLINE_SET: ReadonlySet<string> = new Set(VERIFIED_HELPLINE_NUMBERS);
+
+/** Result returned by {@link validateTriageMessage}. */
 export interface TriageValidationResult {
   valid: boolean;
   error?: string;
 }
 
+/**
+ * Validates that an incoming SOS description has enough detail for triage.
+ * Rejects empty, whitespace-only, or overly short (< 5 characters) messages.
+ */
 export function validateTriageMessage(message: string): TriageValidationResult {
   const trimmed = message.trim();
   if (!trimmed) {
@@ -22,6 +35,10 @@ export function validateTriageMessage(message: string): TriageValidationResult {
   return { valid: true };
 }
 
+/**
+ * Formats latitude and longitude into a fixed 4-decimal coordinate string,
+ * or returns `null` when either value is missing or non-finite.
+ */
 export function formatCoordinates(lat?: number | null, lng?: number | null): string | null {
   if (
     typeof lat === 'number' &&
@@ -34,8 +51,94 @@ export function formatCoordinates(lat?: number | null, lng?: number | null): str
   return null;
 }
 
+/**
+ * Builds a WhatsApp deep-link URL with the SOS message safely URI-encoded.
+ */
 export function buildWhatsAppShareUrl(sosMessage: string): string {
   return `https://wa.me/?text=${encodeURIComponent(sosMessage)}`;
+}
+
+/**
+ * Checks whether a value matches one of the verified North East emergency helplines.
+ */
+export function isValidHelpline(helpline: unknown): helpline is VerifiedHelplineNumber {
+  return typeof helpline === 'string' && VERIFIED_HELPLINE_SET.has(helpline);
+}
+
+/**
+ * Returns the helpline number if verified, otherwise falls back to the
+ * national integrated emergency helpline (`112`).
+ */
+export function sanitizeHelpline(helpline: unknown): VerifiedHelplineNumber {
+  return isValidHelpline(helpline) ? helpline : '112';
+}
+
+/**
+ * Determines whether the server should bypass Gemini and use offline triage rules
+ * because the API key is missing, blank, or still set to the example placeholder.
+ */
+export function shouldUseOfflineTriageFallback(apiKey?: string | null): boolean {
+  const trimmed = typeof apiKey === 'string' ? apiKey.trim() : '';
+  return !trimmed || trimmed === 'MY_GEMINI_API_KEY';
+}
+
+/**
+ * Normalizes and validates an untrusted JSON payload returned by Gemini triage,
+ * safely sanitizing invalid helplines and backfilling missing fields from offline triage.
+ */
+export function normalizeAiTriagePayload(
+  rawPayload: unknown,
+  req: TriageRequest,
+  getHelplineLabel: (number: string) => string
+): TriageResponse {
+  const fallback = runOfflineTriage(req);
+  const parsed =
+    rawPayload !== null && typeof rawPayload === 'object'
+      ? (rawPayload as Record<string, unknown>)
+      : {};
+
+  const helpline = sanitizeHelpline(parsed.recommendedHelpline);
+
+  const stepsArray: string[] = Array.isArray(parsed.immediateSteps)
+    ? parsed.immediateSteps
+        .filter((s: unknown): s is string => typeof s === 'string' && s.trim().length > 0)
+        .map((s) => s.trim())
+        .slice(0, 3)
+    : [];
+
+  while (stepsArray.length < 3) {
+    stepsArray.push(fallback.immediateSteps[stepsArray.length]);
+  }
+
+  const urgency: TriageResponse['urgency'] =
+    parsed.urgency === 'Critical' ||
+    parsed.urgency === 'High' ||
+    parsed.urgency === 'Moderate'
+      ? parsed.urgency
+      : fallback.urgency;
+
+  const category: TriageResponse['category'] =
+    parsed.category === 'Flood' ||
+    parsed.category === 'Landslide' ||
+    parsed.category === 'Medical' ||
+    parsed.category === 'Fire/Rescue'
+      ? parsed.category
+      : fallback.category;
+
+  const sosMessage =
+    typeof parsed.sosMessage === 'string' && parsed.sosMessage.trim().length > 10
+      ? parsed.sosMessage.trim()
+      : fallback.sosMessage;
+
+  return {
+    urgency,
+    category,
+    recommendedHelpline: helpline,
+    recommendedHelplineLabel: getHelplineLabel(helpline),
+    immediateSteps: [stepsArray[0], stepsArray[1], stepsArray[2]],
+    sosMessage,
+    source: 'gemini',
+  };
 }
 
 /**
@@ -195,7 +298,7 @@ export function runOfflineTriage(req: TriageRequest): TriageResponse {
     urgency = 'Moderate';
   }
 
-  let recommendedHelpline = '112';
+  let recommendedHelpline: VerifiedHelplineNumber = '112';
   let recommendedHelplineLabel = 'National Integrated Emergency (Police, Fire, Rescue)';
   let immediateSteps: [string, string, string];
 

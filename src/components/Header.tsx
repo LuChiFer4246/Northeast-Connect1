@@ -32,6 +32,10 @@ const NAV_ITEMS: Array<{
   { id: 'guide', label: 'Survival Guide', shortLabel: 'Guide', icon: BookOpen },
 ];
 
+/**
+ * Top application bar containing branding, primary section navigation,
+ * live online/offline status, Elderly / Low-Battery Mode toggle, and PWA install trigger.
+ */
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   onSelectTab,
