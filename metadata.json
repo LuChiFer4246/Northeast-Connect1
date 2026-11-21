@@ -1,0 +1,10 @@
+{
+  "name": "Northeast Connect",
+  "description": "Offline-first disaster management, verified emergency helplines, relief camp map, and AI SOS triage assistant for North East India.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

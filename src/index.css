@@ -1,0 +1,94 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-display: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-sans: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  .font-mono, .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Elderly / Low-Battery Mode: Pure OLED black, maximum contrast, enlarged base font size */
+  html.elderly-mode {
+    font-size: 19px;
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  html.elderly-mode body {
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  html.elderly-mode * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html.elderly-mode :focus-visible {
+    outline: 3px solid #fde047 !important;
+    outline-offset: 2px !important;
+  }
+}
+
+/* Accessible focus outlines in standard mode */
+:focus-visible {
+  outline: 3px solid #059669;
+  outline-offset: 2px;
+}
+
+/* Leaflet map container and custom marker overrides */
+.leaflet-container {
+  font-family: var(--font-sans);
+  z-index: 10;
+}
+
+.ne-marker-icon {
+  background: transparent;
+  border: none;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
+  border: 1px solid #cbd5e1;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  min-width: 240px;
+}
+
+html.elderly-mode .leaflet-popup-content-wrapper,
+html.elderly-mode .leaflet-popup-tip {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+html.elderly-mode .leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(110%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
